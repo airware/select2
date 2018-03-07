@@ -36,6 +36,11 @@ define([
     this.clear();
     this.hideLoading();
 
+    var noDisplayMessage = this.options.get('noDisplayMessage');
+    if (noDisplayMessage) {
+     return;
+    }
+
     var $message = $(
       '<li role="treeitem" aria-live="assertive"' +
       ' class="select2-results__option"></li>'
@@ -62,6 +67,10 @@ define([
     this.hideLoading();
 
     var $options = [];
+    var noSearchTextItem = this.options.get('noSearchTextItem');
+    if(noSearchTextItem) {
+      data.results.splice(0, 1);
+    }
 
     if (data.results == null || data.results.length === 0) {
       if (this.$results.children().length === 0) {

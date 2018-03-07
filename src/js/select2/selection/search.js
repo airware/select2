@@ -35,10 +35,15 @@ define([
       self.$search.trigger('focus');
     });
 
-    container.on('close', function () {
-      self.$search.val('');
-      self.$search.removeAttr('aria-activedescendant');
-      self.$search.trigger('focus');
+    container.on('close', function (evt) {
+      var clearSearchInput = self.options.get('clearSearchInput');
+      if (clearSearchInput instanceof Function) {
+        clearSearchInput.call(self, evt);
+      } else {
+        self.$search.val('');
+        self.$search.removeAttr('aria-activedescendant');
+        self.$search.trigger('focus');
+      }
     });
 
     container.on('enable', function () {
@@ -200,12 +205,18 @@ define([
   };
 
   Search.prototype.searchRemoveChoice = function (decorated, item) {
+    if (this.options.get('noRemoveTagByBackspace')) {
+      return;
+    }
+
     this.trigger('unselect', {
       data: item
     });
 
-    this.$search.val(item.text);
-    this.handleSearch();
+    if (!this.options.get('removeTagCompletelyByBackspace')) {
+      this.$search.val(item.text);
+      this.handleSearch();
+    }
   };
 
   Search.prototype.resizeSearch = function () {

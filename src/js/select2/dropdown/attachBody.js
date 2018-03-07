@@ -148,8 +148,9 @@ define([
       bottom: $window.scrollTop() + $window.height()
     };
 
-    var enoughRoomAbove = viewport.top < (offset.top - dropdown.height);
-    var enoughRoomBelow = viewport.bottom > (offset.bottom + dropdown.height);
+    var forceBelow = this.options.get('forceBelow');
+    var enoughRoomAbove = !forceBelow && (viewport.top < (offset.top - dropdown.height));
+    var enoughRoomBelow = forceBelow || viewport.bottom > (offset.bottom + dropdown.height);
 
     var css = {
       left: offset.left,

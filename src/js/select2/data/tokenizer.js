@@ -88,7 +88,15 @@ define([
         continue;
       }
 
-      var part = term.substr(0, i);
+      if (this.options.get('tokenizeLast')) {
+        var nextTermChar = term[i+1];
+        if(nextTermChar && $.inArray(nextTermChar, separators) === -1) {
+          i++;
+          continue;
+        }
+      }
+
+      var part = term.substring(0, i);
       var partParams = $.extend({}, params, {
         term: part
       });
