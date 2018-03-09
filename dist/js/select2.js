@@ -874,8 +874,7 @@ S2.define('select2/results',[
     this.clear();
     this.hideLoading();
 
-    var noDisplayMessage = this.options.get('noDisplayMessage');
-    if (noDisplayMessage) {
+    if (this.options.get('noDisplayMessage')) {
      return;
     }
 
@@ -905,10 +904,6 @@ S2.define('select2/results',[
     this.hideLoading();
 
     var $options = [];
-    var noSearchTextItem = this.options.get('noSearchTextItem');
-    if(noSearchTextItem) {
-      data.results.splice(0, 1);
-    }
 
     if (data.results == null || data.results.length === 0) {
       if (this.$results.children().length === 0) {
@@ -3842,14 +3837,6 @@ S2.define('select2/data/tokenizer',[
         i++;
 
         continue;
-      }
-
-      if (this.options.get('tokenizeLast')) {
-        var nextTermChar = term[i+1];
-        if(nextTermChar && $.inArray(nextTermChar, separators) === -1) {
-          i++;
-          continue;
-        }
       }
 
       var part = term.substring(0, i);
