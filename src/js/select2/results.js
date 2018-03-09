@@ -36,8 +36,7 @@ define([
     this.clear();
     this.hideLoading();
 
-    var noDisplayMessage = this.options.get('noDisplayMessage');
-    if (noDisplayMessage) {
+    if (this.options.get('noDisplayMessage')) {
      return;
     }
 
@@ -67,10 +66,6 @@ define([
     this.hideLoading();
 
     var $options = [];
-    var noSearchTextItem = this.options.get('noSearchTextItem');
-    if(noSearchTextItem) {
-      data.results.splice(0, 1);
-    }
 
     if (data.results == null || data.results.length === 0) {
       if (this.$results.children().length === 0) {
