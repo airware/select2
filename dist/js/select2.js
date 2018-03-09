@@ -874,6 +874,10 @@ S2.define('select2/results',[
     this.clear();
     this.hideLoading();
 
+    if (this.options.get('noDisplayMessage')) {
+     return;
+    }
+
     var $message = $(
       '<li role="treeitem" aria-live="assertive"' +
       ' class="select2-results__option"></li>'
@@ -1961,10 +1965,15 @@ S2.define('select2/selection/search',[
       self.$search.trigger('focus');
     });
 
-    container.on('close', function () {
-      self.$search.val('');
-      self.$search.removeAttr('aria-activedescendant');
-      self.$search.trigger('focus');
+    container.on('close', function (evt) {
+      var clearSearchInput = self.options.get('clearSearchInput');
+      if (clearSearchInput instanceof Function) {
+        clearSearchInput.call(self, evt);
+      } else {
+        self.$search.val('');
+        self.$search.removeAttr('aria-activedescendant');
+        self.$search.trigger('focus');
+      }
     });
 
     container.on('enable', function () {
@@ -2126,12 +2135,18 @@ S2.define('select2/selection/search',[
   };
 
   Search.prototype.searchRemoveChoice = function (decorated, item) {
+    if (this.options.get('noRemoveTagByBackspace')) {
+      return;
+    }
+
     this.trigger('unselect', {
       data: item
     });
 
-    this.$search.val(item.text);
-    this.handleSearch();
+    if (!this.options.get('removeTagCompletelyByBackspace')) {
+      this.$search.val(item.text);
+      this.handleSearch();
+    }
   };
 
   Search.prototype.resizeSearch = function () {
@@ -3824,7 +3839,7 @@ S2.define('select2/data/tokenizer',[
         continue;
       }
 
-      var part = term.substr(0, i);
+      var part = term.substring(0, i);
       var partParams = $.extend({}, params, {
         term: part
       });
@@ -4375,8 +4390,9 @@ S2.define('select2/dropdown/attachBody',[
       bottom: $window.scrollTop() + $window.height()
     };
 
-    var enoughRoomAbove = viewport.top < (offset.top - dropdown.height);
-    var enoughRoomBelow = viewport.bottom > (offset.bottom + dropdown.height);
+    var forceBelow = this.options.get('forceBelow');
+    var enoughRoomAbove = !forceBelow && (viewport.top < (offset.top - dropdown.height));
+    var enoughRoomBelow = forceBelow || viewport.bottom > (offset.bottom + dropdown.height);
 
     var css = {
       left: offset.left,
@@ -4765,7 +4781,7 @@ S2.define('select2/defaults',[
     }
 
     if (options.dropdownAdapter == null) {
-      if (options.multiple) {
+      if (options.multiple && !options.displaySearch) {
         options.dropdownAdapter = Dropdown;
       } else {
         var SearchableDropdown = Utils.Decorate(Dropdown, DropdownSearch);

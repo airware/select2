@@ -143,7 +143,7 @@ define([
     }
 
     if (options.dropdownAdapter == null) {
-      if (options.multiple) {
+      if (options.multiple && !options.displaySearch) {
         options.dropdownAdapter = Dropdown;
       } else {
         var SearchableDropdown = Utils.Decorate(Dropdown, DropdownSearch);

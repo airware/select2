@@ -36,6 +36,10 @@ define([
     this.clear();
     this.hideLoading();
 
+    if (this.options.get('noDisplayMessage')) {
+     return;
+    }
+
     var $message = $(
       '<li role="treeitem" aria-live="assertive"' +
       ' class="select2-results__option"></li>'

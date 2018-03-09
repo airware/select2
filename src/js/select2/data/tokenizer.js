@@ -88,7 +88,7 @@ define([
         continue;
       }
 
-      var part = term.substr(0, i);
+      var part = term.substring(0, i);
       var partParams = $.extend({}, params, {
         term: part
       });
