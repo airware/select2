@@ -71,6 +71,7 @@ define([
     var separators = options.get('tokenSeparators') || [];
     var term = params.term;
     var i = 0;
+    var j = 0;
 
     var createTag = this.createTag || function (params) {
       return {
@@ -88,7 +89,7 @@ define([
         continue;
       }
 
-      var part = term.substring(0, i);
+      var part = term.substring(j, i);
       var partParams = $.extend({}, params, {
         term: part
       });
@@ -97,14 +98,22 @@ define([
 
       if (data == null) {
         i++;
+        if (options.get('tokenizePart')) {
+          j = i;
+        }
         continue;
       }
 
       callback(data);
 
       // Reset the term to not include the tokenized portion
-      term = term.substr(i + 1) || '';
-      i = 0;
+      if (!options.get('tokenizePart')) {
+        term = term.substr(i + 1) || '';
+        i = 0;
+      } else {
+        term = (term.substr(0, j) + term.substr(i + 1)) || '';
+      }
+      j = i;
     }
 
     return {
